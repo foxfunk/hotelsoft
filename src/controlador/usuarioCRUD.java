@@ -92,7 +92,7 @@ public class usuarioCRUD {
             st.executeUpdate();
         } catch (SQLException ex) {
             si = true;
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+            //JOptionPane.showMessageDialog(null, ex.getMessage());
             JOptionPane.showMessageDialog(null, "el rut a sido ingresado anteriormente");
         } finally {
             c.desconectar();
@@ -130,14 +130,14 @@ public class usuarioCRUD {
             }
 
             if (si) {
-            
+                
                 strut = u.getRut_user();
                 contraseña = u.getContraseña();
                 nombres = u.getNombre();
                 apellidop = u.getApellidop();
                 apellidom = u.getApellidom();
                 foto = u.getFoto();
-
+                id = u.getId_perfil();
 
                 System.out.println("encontre " + strut);
             } else {
@@ -148,6 +148,8 @@ public class usuarioCRUD {
                 apellidom = "";
                 contraseña = "";
                 foto = null;
+                id = 0;
+                JOptionPane.showMessageDialog(null,"Usuario no encontrado");
             }
 
             //JOptionPane.showMessageDialog(null, numerox+""+""+nombrex);
@@ -188,4 +190,67 @@ public class usuarioCRUD {
 
         return ii;
     }
+    
+    
+    public void modificaruntipodeclase(usuario u) {
+        String sql = "UPDATE `usuario` SET `contraseña`=?,`nombre`=?,`apellidop`=?,`apellidom`=?,`id_perfil`=? WHERE rut_user = ?";
+
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+
+            st.setString(1, u.getContraseña());
+            st.setString(2, u.getNombre());
+            st.setString(3, u.getApellidop());
+            st.setString(4, u.getApellidom());
+            st.setInt(5, u.getId_perfil());
+        
+            st.setString(6, u.getRut_user());
+
+            int res = st.executeUpdate();
+            if (res == 1) {
+                JOptionPane.showMessageDialog(null, "usuario modificado");
+            } else {
+                System.out.println("usuario no modificado");
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Rut no valido corresponde a otra persona");
+        } finally {
+            c.desconectar();
+        }
+
+    }
+    
+    public ArrayList consultarTodos() {
+        ArrayList lista = new ArrayList();
+        String sql = "SELECT `rut_user`, `contraseña`, `nombre`, `apellidop`, `apellidom`, perfil.descripcion FROM `usuario`,`perfil` WHERE usuario.id_perfil=perfil.`id_perfil`";
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                usuario b = new usuario();
+                b.setRut_user(rs.getString(1));
+                b.setNombre(rs.getString(2));
+                b.setApellidop(rs.getString(3));
+                b.setApellidom(rs.getString(4));
+                b.setContraseña(rs.getString(5));
+                b.setPerfil(rs.getString(6));
+                
+
+                lista.add(b);
+
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } finally {
+            c.desconectar();
+        }
+        return lista;
+    }
+
+
 }
