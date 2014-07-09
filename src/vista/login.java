@@ -9,7 +9,13 @@ package vista;
 import controlador.usuarioCRUD;
 import controlador.validarrut;
 import java.awt.event.KeyEvent;
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Calendar;
 import javax.swing.JOptionPane;
+import modelo.sesion;
 import modelo.usuario;
 
 /**
@@ -141,12 +147,13 @@ public class login extends javax.swing.JFrame {
                 .addGap(42, 42, 42)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panel1Layout.createSequentialGroup()
-                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtrutlogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3)
-                            .addComponent(lbrut)
-                            .addComponent(txtverlog, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtverlog, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtrutlogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1)
+                                .addComponent(jLabel3)
+                                .addComponent(lbrut)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtcontraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,6 +189,7 @@ public class login extends javax.swing.JFrame {
         v.validarrut(txtrutlogin.getText(), txtverlog.getText());
         lbrut.setText(validarrut.msj);
         if(txtrutlogin.getText().isEmpty()){
+            lbrut.setVisible(true);
             lbrut.setText("escriba correctamente el rut");
         }else{
             
@@ -191,6 +199,7 @@ public class login extends javax.swing.JFrame {
         
         
         if(txtverlog.getText().isEmpty()){
+            lbrut.setVisible(true);
             lbrut.setText("escriba correctamente el rut");
         }else{
             lbrut.setText("");
@@ -219,6 +228,18 @@ public class login extends javax.swing.JFrame {
              admin a = new admin();
              a.setVisible(true);
              usuarioCRUD.l = false;
+             sesion s = new sesion();
+               Calendar cal1 = Calendar.getInstance();
+               String fecha;
+               String hora;
+               
+               fecha = cal1.get(Calendar.DATE)+"/"+cal1.get(Calendar.MONTH) +"/"+cal1.get(Calendar.YEAR);
+               hora = cal1.get(Calendar.HOUR)+":"+cal1.get(Calendar.MINUTE)+":"+cal1.get(Calendar.SECOND);
+ 
+             s.setRut(rut);
+             s.setHora(Time.valueOf(hora));
+            s.setFecha(fecha);
+             ux.insertarsesion(s);
            }else{
                txtcontraseña.setText("");
                txtrutlogin.setText("");

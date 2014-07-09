@@ -25,8 +25,10 @@ import javax.swing.JOptionPane;
 import modelo.Perfil;
 import modelo.usuario;
 import conexion.Conexion;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import modelo.sesion;
 
 /**
  *
@@ -63,6 +65,10 @@ public class admin extends javax.swing.JFrame {
         lberrormodapellidom.setVisible(false);
         lberrormodapellidop.setVisible(false);
 
+          lbrutfiltro.setVisible(false);
+            txtrutfiltro.setVisible(false);
+             lbstring.setVisible(false);
+              txtstring.setVisible(false);
         //CARGAR LOS COMBOBOX DESDE LA BD
         Conexion c = new Conexion();
         
@@ -97,8 +103,41 @@ public class admin extends javax.swing.JFrame {
             modelox.addRow(fila);
         }
         tablabuscar.setModel(modelox);
+        
+        
+           ArrayList listados = crud.consultarTodasesiones();
+        //obtener el modelo de la tabla con getmodel
+        DefaultTableModel modelo = (DefaultTableModel) tablasesion.getModel();
+        //limpiar la tabla
+        modelo.getDataVector().clear();
+        for (int i = 0; i < listados.size(); i++) {
+//  
+           
+            usuario b = (usuario) listados.get(i);
+            
+            Object fila[] = {b.getRut_user(), b.getNombre(),b.getApellidop(),b.getApellidom(),b.getPerfil(),b.getHora(),b.getFecha()};
+            modelo.addRow(fila);
+        }
+        tablasesion.setModel(modelo);
+        
+        
+        
     
 }
+    
+      private void cargartablilla(ArrayList lis) {
+        ArrayList<usuario> lista = lis;
+
+        //obtener el modelo de la tabla
+        DefaultTableModel modelo = (DefaultTableModel) tablabuscar.getModel();
+        modelo.getDataVector().clear();
+        for (usuario b : lista) {
+
+            String[] fila = {b.getRut_user(), b.getNombre(),b.getApellidop(),b.getApellidom(),b.getPerfil()};
+            modelo.addRow(fila);
+        }
+        tablabuscar.setModel(modelo);
+    }
 
     //FIN PARA CARGAR LOS COMBOBOX DESDE LA BD
     /**
@@ -165,7 +204,17 @@ public class admin extends javax.swing.JFrame {
         jPanel13 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablabuscar = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        txtrutfiltro = new javax.swing.JTextField();
+        lbrutfiltro = new javax.swing.JLabel();
+        lbstring = new javax.swing.JLabel();
+        txtstring = new javax.swing.JTextField();
         jPanel14 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablasesion = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
         jPanel12 = new javax.swing.JPanel();
         lblFoto1 = new javax.swing.JLabel();
         btmostrar = new javax.swing.JButton();
@@ -624,20 +673,20 @@ public class admin extends javax.swing.JFrame {
 
         tablabuscar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Rut", "Nombres", "Apellido paterno", "Apellido materno", "Perfil", "Estado", "Eliminar"
+                "Rut", "Nombres", "Apellido paterno", "Apellido materno", "Perfil", "Eliminar"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, true, true
+                false, false, false, false, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -649,6 +698,49 @@ public class admin extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(tablabuscar);
+        if (tablabuscar.getColumnModel().getColumnCount() > 0) {
+            tablabuscar.getColumnModel().getColumn(0).setResizable(false);
+            tablabuscar.getColumnModel().getColumn(1).setResizable(false);
+            tablabuscar.getColumnModel().getColumn(2).setResizable(false);
+            tablabuscar.getColumnModel().getColumn(3).setResizable(false);
+            tablabuscar.getColumnModel().getColumn(4).setResizable(false);
+            tablabuscar.getColumnModel().getColumn(5).setResizable(false);
+        }
+
+        jButton2.setText("Eliminar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel17.setText("Buscar");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar", "Rut", "Nombre", "Apellido Paterno", "Apellido Materno", "Perfil" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        txtrutfiltro.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtrutfiltroKeyTyped(evt);
+            }
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtrutfiltroKeyPressed(evt);
+            }
+        });
+
+        lbrutfiltro.setText("Rut");
+
+        lbstring.setText("lbstring");
+
+        txtstring.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtstringActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -656,28 +748,124 @@ public class admin extends javax.swing.JFrame {
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)
                 .addGap(27, 27, 27))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(50, 50, 50))
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addGap(147, 147, 147)
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                                .addComponent(lbrutfiltro)
+                                .addGap(22, 22, 22))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                                .addComponent(lbstring)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))))
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtrutfiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtstring, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
-                .addGap(97, 97, 97)
+                .addGap(20, 20, 20)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtrutfiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbrutfiltro))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbstring)
+                    .addComponent(txtstring, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(190, Short.MAX_VALUE))
+                .addGap(35, 35, 35)
+                .addComponent(jButton2)
+                .addContainerGap(90, Short.MAX_VALUE))
         );
 
         tabbedPaneVertical2.addTab("Eliminar", jPanel13);
+
+        tablasesion.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Rut", "Nombres", "Apellido paterno", "Apellido materno", "Perfil", "hora", "fecha"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tablasesion);
+        if (tablasesion.getColumnModel().getColumnCount() > 0) {
+            tablasesion.getColumnModel().getColumn(0).setResizable(false);
+            tablasesion.getColumnModel().getColumn(1).setResizable(false);
+            tablasesion.getColumnModel().getColumn(2).setResizable(false);
+            tablasesion.getColumnModel().getColumn(3).setResizable(false);
+            tablasesion.getColumnModel().getColumn(4).setResizable(false);
+            tablasesion.getColumnModel().getColumn(5).setResizable(false);
+            tablasesion.getColumnModel().getColumn(6).setResizable(false);
+        }
+
+        jButton3.setText("Reporte");
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 695, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                .addContainerGap(435, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addGap(168, 168, 168))
+            .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel14Layout.createSequentialGroup()
+                    .addGap(21, 21, 21)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)
+                    .addGap(21, 21, 21)))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 407, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                .addContainerGap(285, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addGap(93, 93, 93))
+            .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel14Layout.createSequentialGroup()
+                    .addGap(143, 143, 143)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(144, Short.MAX_VALUE)))
         );
 
         tabbedPaneVertical2.addTab("Sesiones", jPanel14);
@@ -1216,6 +1404,86 @@ public class admin extends javax.swing.JFrame {
           }
     }//GEN-LAST:event_btmodificarActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    
+
+        if (tablabuscar.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null, "seleccione al menos un usuario para eliminar");
+        } else {
+       
+        }
+// TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        
+        if(jComboBox1.getSelectedIndex() == 0){
+            lbrutfiltro.setVisible(false);
+            txtrutfiltro.setVisible(false);
+             lbstring.setVisible(false);
+             txtstring.setVisible(false);
+        }else if (jComboBox1.getSelectedIndex() == 1){
+            lbrutfiltro.setVisible(true);
+            txtrutfiltro.setVisible(true);
+             lbstring.setVisible(false);
+             txtstring.setVisible(false);
+        }else if (jComboBox1.getSelectedIndex() != 1 && jComboBox1.getSelectedIndex() != 0 ){
+             lbrutfiltro.setVisible(false);
+            txtrutfiltro.setVisible(false);
+            lbstring.setVisible(true);
+            lbstring.setText(jComboBox1.getSelectedItem().toString());
+            txtstring.setVisible(true);
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void txtrutfiltroKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtrutfiltroKeyPressed
+  if (evt.isControlDown() || evt.isShiftDown()) {
+            JOptionPane.showMessageDialog(null, "porfavor escriba su rut");
+            evt.consume();
+        }  
+        usuarioCRUD crud = new usuarioCRUD();
+  ArrayList lista = crud.seleccionarporrut(txtrutfiltro.getText());
+        cargartablilla(lista);
+// TODO add your handling code here:
+    }//GEN-LAST:event_txtrutfiltroKeyPressed
+
+    private void txtrutfiltroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtrutfiltroKeyTyped
+   char caracter = evt.getKeyChar();
+        if (!(Character.isDigit(caracter)) && (caracter != KeyEvent.VK_BACK_SPACE)) {
+            JOptionPane.showMessageDialog(null, "solo numeros");
+            evt.consume();
+        }
+
+
+        if (txtrutfiltro.getText().length() >= 8) {
+            evt.setKeyChar((char) KeyEvent.VK_CLEAR);
+           
+            
+            txtrutfiltro.requestFocus();
+         }
+        
+// TODO add your handling code here:
+    }//GEN-LAST:event_txtrutfiltroKeyTyped
+
+    private void txtstringActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtstringActionPerformed
+ usuarioCRUD crud = new usuarioCRUD();
+
+//Perfil
+        if(lbstring.getText().equals("Nombre")){
+              
+  ArrayList lista = crud.seleccionarpornombre(txtstring.getText());
+        cargartablilla(lista);
+        }else if (lbstring.getText().equals("Apellido Paterno")){
+            ArrayList lista = crud.seleccionarporapellidop(txtstring.getText());
+        cargartablilla(lista);
+        }else if (lbstring.getText().equals("Apellido Materno")){
+             ArrayList lista = crud.seleccionarporapellidom(txtstring.getText());
+        cargartablilla(lista);
+        }
+
+// TODO add your handling code here:
+    }//GEN-LAST:event_txtstringActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1261,6 +1529,9 @@ public class admin extends javax.swing.JFrame {
     private javax.swing.JComboBox cboperfil;
     private javax.swing.JComboBox cboperfilmod;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1269,6 +1540,7 @@ public class admin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1300,6 +1572,7 @@ public class admin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private org.edisoncor.gui.label.LabelMetric labelMetric1;
     private javax.swing.JLabel lberroringapellidom;
     private javax.swing.JLabel lberroringapellidop;
@@ -1314,7 +1587,9 @@ public class admin extends javax.swing.JFrame {
     private javax.swing.JLabel lberrormodperfil;
     private javax.swing.JLabel lblFoto;
     private javax.swing.JLabel lblFoto1;
+    private javax.swing.JLabel lbrutfiltro;
     private javax.swing.JLabel lbrutmod;
+    private javax.swing.JLabel lbstring;
     private org.edisoncor.gui.tabbedPane.TabbedPaneVertical tabbedPaneVertical1;
     private org.edisoncor.gui.tabbedPane.TabbedPaneVertical tabbedPaneVertical2;
     private org.edisoncor.gui.tabbedPane.TabbedPaneVertical tabbedPaneVertical3;
@@ -1325,6 +1600,7 @@ public class admin extends javax.swing.JFrame {
     private org.edisoncor.gui.tabbedPane.TabbedPaneVertical tabbedPaneVertical8;
     private org.edisoncor.gui.tabbedPane.TabbedSelector2 tabbedSelector21;
     private javax.swing.JTable tablabuscar;
+    private javax.swing.JTable tablasesion;
     private javax.swing.JTextField txtapellidom;
     private javax.swing.JTextField txtapellidop;
     private javax.swing.JTextField txtmodapellidom;
@@ -1335,6 +1611,8 @@ public class admin extends javax.swing.JFrame {
     private javax.swing.JPasswordField txtpass;
     private javax.swing.JTextField txtrut;
     private javax.swing.JTextField txtrutbuscar;
+    private javax.swing.JTextField txtrutfiltro;
+    private javax.swing.JTextField txtstring;
     private javax.swing.JTextField txtver;
     private javax.swing.JTextField txtverificarbuscar;
     // End of variables declaration//GEN-END:variables

@@ -8,6 +8,7 @@ package modelo;
 
 import java.io.FileInputStream;
 import java.sql.Blob;
+import java.sql.Time;
 
 /**
  *
@@ -24,6 +25,24 @@ public class usuario {
     private Blob foto2;
     private int id_perfil;
     private String perfil;
+      private Time hora;
+    private String fecha;
+
+    public Time getHora() {
+        return hora;
+    }
+
+    public void setHora(Time hora) {
+        this.hora = hora;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
 
     public String getPerfil() {
         return perfil;

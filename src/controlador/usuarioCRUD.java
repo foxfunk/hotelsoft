@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
-
+import modelo.sesion;
 import modelo.usuario;
 import vista.login;
 
@@ -72,6 +72,34 @@ public class usuarioCRUD {
             c.desconectar();
         }
         return u;
+    }
+    
+     public void insertarsesion(sesion u) {
+        boolean si = false;
+        String sql = "insert into sesion (`rut_user`, `hora`, `fecha`)values(?,?,?)";
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+
+            st.setString(1, u.getRut());
+            st.setTime(2, u.getHora());
+            st.setString(3, u.getFecha());
+         
+
+            st.executeUpdate();
+        } catch (SQLException ex) {
+            si = true;
+           JOptionPane.showMessageDialog(null, ex.getMessage());
+//            JOptionPane.showMessageDialog(null, "el rut a sido ingresado anteriormente");
+        } finally {
+            c.desconectar();
+            if (si) {
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Usuario Ingresado con exito");
+            }
+        }
+
     }
 
     public void insertar(usuario u) {
@@ -252,5 +280,159 @@ public class usuarioCRUD {
         return lista;
     }
 
+    
+     public ArrayList consultarTodasesiones() {
+        ArrayList lista = new ArrayList();
+        String sql = "SELECT usuario.rut_user, usuario.nombre, usuario.apellidop, usuario.apellidom, perfil.descripcion, sesion.hora, sesion.fecha FROM `usuario`,`perfil`,sesion WHERE sesion.rut_user=usuario.rut_user and usuario.id_perfil=perfil.`id_perfil` ";
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                usuario b = new usuario();
+                sesion s = new sesion();
+                b.setRut_user(rs.getString(1));
+                b.setNombre(rs.getString(2));
+                b.setApellidop(rs.getString(3));
+                b.setApellidom(rs.getString(4));
+               
+                b.setPerfil(rs.getString(5));
+                b.setHora(rs.getTime(6));
+                b.setFecha(rs.getString(7));
+                
+
+                lista.add(b);
+                
+
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } finally {
+            c.desconectar();
+        }
+        return lista;
+    }
+     
+      public ArrayList<usuario> seleccionarporrut(String parametro) {
+
+        usuario book = null;
+        ArrayList<usuario> listatodo = new ArrayList<usuario>();
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement("SELECT `rut_user`,  `nombre`, `apellidop`, `apellidom`, perfil.descripcion FROM `usuario`,`perfil` WHERE usuario.id_perfil=perfil.`id_perfil` and rut_user LIKE  '%" + parametro + "%'");
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                 book = new usuario();
+               book.setRut_user(rs.getString(1));
+                book.setNombre(rs.getString(2));
+                book.setApellidop(rs.getString(3));
+                book.setApellidom(rs.getString(4));
+               
+                book.setPerfil(rs.getString(5));
+                
+
+                listatodo.add(book);
+            }
+            System.out.println("total " + listatodo.size());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        c.desconectar();
+        return listatodo;
+    }
+      
+        public ArrayList<usuario> seleccionarpornombre(String parametro) {
+
+        usuario book = null;
+        ArrayList<usuario> listatodo = new ArrayList<usuario>();
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement("SELECT `rut_user`, `nombre`, `apellidop`, `apellidom`, perfil.descripcion FROM `usuario`,`perfil` WHERE usuario.id_perfil=perfil.`id_perfil` and nombre LIKE  '%" + parametro + "%'");
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                 book = new usuario();
+               book.setRut_user(rs.getString(1));
+                book.setNombre(rs.getString(2));
+                book.setApellidop(rs.getString(3));
+                book.setApellidom(rs.getString(4));
+              
+                book.setPerfil(rs.getString(5));
+                
+
+                listatodo.add(book);
+            }
+            System.out.println("total " + listatodo.size());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        c.desconectar();
+        return listatodo;
+    }
+
+  public ArrayList<usuario> seleccionarporapellidop(String parametro) {
+
+        usuario book = null;
+        ArrayList<usuario> listatodo = new ArrayList<usuario>();
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement("SELECT `rut_user`,  `nombre`, `apellidop`, `apellidom`, perfil.descripcion FROM `usuario`,`perfil` WHERE usuario.id_perfil=perfil.`id_perfil` and apellidop LIKE  '%" + parametro + "%'");
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                 book = new usuario();
+               book.setRut_user(rs.getString(1));
+                book.setNombre(rs.getString(2));
+                book.setApellidop(rs.getString(3));
+                book.setApellidom(rs.getString(4));
+                book.setContraseña(rs.getString(5));
+                book.setPerfil(rs.getString(6));
+                
+
+                listatodo.add(book);
+            }
+            System.out.println("total " + listatodo.size());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        c.desconectar();
+        return listatodo;
+    }
+
+    public ArrayList<usuario> seleccionarporapellidom(String parametro) {
+
+        usuario book = null;
+        ArrayList<usuario> listatodo = new ArrayList<usuario>();
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement("SELECT `rut_user`, `nombre`, `apellidop`, `apellidom`, perfil.descripcion FROM `usuario`,`perfil` WHERE usuario.id_perfil=perfil.`id_perfil` and apellidom LIKE  '%" + parametro + "%'");
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                 book = new usuario();
+               book.setRut_user(rs.getString(1));
+                book.setNombre(rs.getString(2));
+                book.setApellidop(rs.getString(3));
+                book.setApellidom(rs.getString(4));
+                book.setContraseña(rs.getString(5));
+                book.setPerfil(rs.getString(6));
+                
+
+                listatodo.add(book);
+            }
+            System.out.println("total " + listatodo.size());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        c.desconectar();
+        return listatodo;
+    }
 
 }
