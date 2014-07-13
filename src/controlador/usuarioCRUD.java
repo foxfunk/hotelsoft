@@ -96,7 +96,7 @@ public class usuarioCRUD {
             if (si) {
 
             } else {
-                JOptionPane.showMessageDialog(null, "Usuario Ingresado con exito");
+               // JOptionPane.showMessageDialog(null, "Usuario Ingresado con exito");
             }
         }
 
@@ -433,6 +433,20 @@ public class usuarioCRUD {
         }
         c.desconectar();
         return listatodo;
+    }
+    
+    public void eliminarJugador(usuario j) {
+        String sql = "delete from usuario where rut_user = ?"; 
+        c.conectar(); 
+        try { 
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+            st.setString(1, j.getRut_user()); st.executeUpdate(); 
+            JOptionPane.showMessageDialog(null, "usuario Eliminado "); 
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage()); 
+        } finally { 
+            c.desconectar(); 
+        } 
     }
 
 }

@@ -15,7 +15,7 @@ Connection conect = null;
              
            //Cargamos el Driver MySQL
            Class.forName("com.mysql.jdbc.Driver");
-           conect = DriverManager.getConnection("jdbc:mysql://localhost/hotel","fox","1234");
+           conect = DriverManager.getConnection("jdbc:mysql://localhost/hotelsoft","fox","1234");
            //JOptionPane.showMessageDialog(null, "conectado");
            //Cargamos el Driver Access
            //Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");

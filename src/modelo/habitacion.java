@@ -2,23 +2,48 @@
 
 package modelo;
 
+import java.io.FileInputStream;
+import java.sql.Blob;
+
 public class habitacion {
     private int idsector;
     private int numero;
     private int id_estado;
     private int valor;
     private int id_tipo_habitacion;
+ private FileInputStream foto;
+    private Blob foto2;
 
     public habitacion() {
     }
 
-    public habitacion(int idsector, int numero, int id_estado, int valor, int id_tipo_habitacion) {
+    public habitacion(int idsector, int numero, int id_estado, int valor, int id_tipo_habitacion, FileInputStream foto, Blob foto2) {
         this.idsector = idsector;
         this.numero = numero;
         this.id_estado = id_estado;
         this.valor = valor;
         this.id_tipo_habitacion = id_tipo_habitacion;
+        this.foto = foto;
+        this.foto2 = foto2;
     }
+
+    public FileInputStream getFoto() {
+        return foto;
+    }
+
+    public void setFoto(FileInputStream foto) {
+        this.foto = foto;
+    }
+
+    public Blob getFoto2() {
+        return foto2;
+    }
+
+    public void setFoto2(Blob foto2) {
+        this.foto2 = foto2;
+    }
+
+    
 
     public int getIdsector() {
         return idsector;
