@@ -26,6 +26,12 @@ import modelo.habitacion;
 public class habitacionCRUD {
     
      Conexion c = new Conexion();
+     public static  int id_sector;
+     public static int numero;
+    public static int id_estado;
+    public static int valor;
+    public static int idtipo_habitacon;
+     public static InputStream foto;
 
 
     public void insertar(habitacion u) {
@@ -45,8 +51,8 @@ public class habitacionCRUD {
             st.executeUpdate();
         } catch (SQLException ex) {
             si = true;
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-            //JOptionPane.showMessageDialog(null, "el rut a sido ingresado anteriormente");
+           // JOptionPane.showMessageDialog(null, ex.getMessage());
+            JOptionPane.showMessageDialog(null, "la habitacion a sido ingresado anteriormente");
         } finally {
             c.desconectar();
             if (si) {
@@ -58,188 +64,154 @@ public class habitacionCRUD {
 
     }
 
-//    public habitacion consultarPorrut(String rut) {
-//        boolean si = false;
-//        habitacion u = null;
-//        String sql = "SELECT * FROM `usuario` WHERE rut_user = ?";
-//        c.conectar();
-//        try {
-//            PreparedStatement st = c.getConector().prepareStatement(sql);
-//            st.setString(1, rut);
+    public habitacion consultarPorrut(int num) {
+        boolean si = false;
+        habitacion u = null;
+        String sql = "SELECT * FROM `habitacion` WHERE `numero`=?";
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+            st.setInt(1, num);
+
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                si = true;
+                u = new habitacion();
+                u.setIdsector(rs.getInt(2));
+                u.setNumero(rs.getInt(3));
+                u.setId_estado(rs.getInt(4));
+                u.setValor(rs.getInt(5));
+                u.setId_tipo_habitacion(rs.getInt(6));
+                u.setFoto2(rs.getBlob(7));
+
+            }
+
+            if (si) {
+                
+                id_sector = u.getIdsector();
+               numero = u.getNumero();
+                id_estado = u.getId_estado();
+                valor = u.getValor();
+                idtipo_habitacon = u.getId_tipo_habitacion();
+                foto = u.getFoto();
+             
+
+                System.out.println("encontre " + numero);
+            } else {
+
+                id_sector = 0;
+                numero = 0;
+                id_estado = 0;
+                valor = 0;
+                idtipo_habitacon = 0;
+                foto = null;
+              
+                JOptionPane.showMessageDialog(null,"Habitacion no encontradoa");
+            }
+
+            //JOptionPane.showMessageDialog(null, numerox+""+""+nombrex);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } finally {
+            c.desconectar();
+        }
+        return u;
+    }
 //
-//            ResultSet rs = st.executeQuery();
+    public static CustomImageIcon getFoto(int num) {
+        Conexion c = new Conexion();
+        String sql = "SELECT foto FROM `habitacion` WHERE numero=? ";
+        CustomImageIcon ii = null;
+        InputStream is = null;
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+            st.setInt(1, num);
+             ResultSet rs = st.executeQuery();
+            
+            if (rs.next()) {
+                is = rs.getBinaryStream(1);
+                if (is != null) {
+
+                    BufferedImage bi = ImageIO.read(is);
+                    ii = new CustomImageIcon(bi);
+                }
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return ii;
+    }
+    
+    
+    public void modificaruntipodeclase(habitacion u) {
+        String sql = "UPDATE `habitacion` SET `idsector`=?,`numero`=?,`id_estado`=?,`valor`=?,`idtipo_habitacion`=? WHERE numero = ?";
+
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+
+            st.setInt(1, u.getIdsector());
+            st.setInt(2, u.getNumero());
+            st.setInt(3, u.getId_estado());
+            st.setInt(4, u.getValor());
+            st.setInt(5, u.getId_tipo_habitacion());
+        
+            st.setInt(6, u.getNumero());
+
+            int res = st.executeUpdate();
+            if (res == 1) {
+                JOptionPane.showMessageDialog(null, "Habitacion modificada");
+            } else {
+                System.out.println("Habitacion no modificado");
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "El numero  corresponde a otra habitacion");
+        } finally {
+            c.desconectar();
+        }
+
+    }
+    
+    public ArrayList consultarTodos() {
+        ArrayList lista = new ArrayList();
+        String sql = "SELECT  sector.descripcion, `numero`, estado.descripcion, `valor`, tipo_habitacion.descripcion FROM `habitacion`,estado, `sector`, tipo_habitacion WHERE habitacion.`idsector`=sector.idsector and habitacion.`id_estado`=estado.`id_estado` and habitacion.`idtipo_habitacion`=tipo_habitacion.idtipo_habitacion";
+        c.conectar();
+        try {
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                habitacion b = new habitacion();
+                b.setSector(rs.getString(1));
+                b.setNumero(rs.getInt(2));
+                b.setEstado(rs.getString(3));
+                b.setValor(rs.getInt(4));
+                b.setTipo_habitacion(rs.getString(5));
+              
+                
+
+                lista.add(b);
+
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } finally {
+            c.desconectar();
+        }
+        return lista;
+    }
 //
-//            while (rs.next()) {
-//                si = true;
-//                u = new usuario();
-//                u.setRut_user(rs.getString(1));
-//                u.setContraseña(rs.getString(2));
-//                u.setNombre(rs.getString(3));
-//                u.setApellidop(rs.getString(4));
-//                u.setApellidom(rs.getString(5));
-//                u.setId_perfil(rs.getInt(6));
-//                u.setFoto2(rs.getBlob(7));
-//
-//            }
-//
-//            if (si) {
-//                
-//                strut = u.getRut_user();
-//                contraseña = u.getContraseña();
-//                nombres = u.getNombre();
-//                apellidop = u.getApellidop();
-//                apellidom = u.getApellidom();
-//                foto = u.getFoto();
-//                id = u.getId_perfil();
-//
-//                System.out.println("encontre " + strut);
-//            } else {
-//
-//                strut = "";
-//                nombres = "";
-//                apellidop = "";
-//                apellidom = "";
-//                contraseña = "";
-//                foto = null;
-//                id = 0;
-//                JOptionPane.showMessageDialog(null,"Usuario no encontrado");
-//            }
-//
-//            //JOptionPane.showMessageDialog(null, numerox+""+""+nombrex);
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        } finally {
-//            c.desconectar();
-//        }
-//        return u;
-//    }
-//
-//    public static CustomImageIcon getFoto(String rut) {
-//        Conexion c = new Conexion();
-//        String sql = "SELECT foto FROM `usuario` WHERE rut_user=? ";
-//        CustomImageIcon ii = null;
-//        InputStream is = null;
-//        c.conectar();
-//        try {
-//            PreparedStatement st = c.getConector().prepareStatement(sql);
-//            st.setString(1, rut);
-//             ResultSet rs = st.executeQuery();
-//            
-//            if (rs.next()) {
-//                is = rs.getBinaryStream(1);
-//                if (is != null) {
-//
-//                    BufferedImage bi = ImageIO.read(is);
-//                    ii = new CustomImageIcon(bi);
-//                }
-//
-//            }
-//
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        return ii;
-//    }
 //    
-//    
-//    public void modificaruntipodeclase(usuario u) {
-//        String sql = "UPDATE `usuario` SET `contraseña`=?,`nombre`=?,`apellidop`=?,`apellidom`=?,`id_perfil`=? WHERE rut_user = ?";
-//
-//        c.conectar();
-//        try {
-//            PreparedStatement st = c.getConector().prepareStatement(sql);
-//
-//            st.setString(1, u.getContraseña());
-//            st.setString(2, u.getNombre());
-//            st.setString(3, u.getApellidop());
-//            st.setString(4, u.getApellidom());
-//            st.setInt(5, u.getId_perfil());
-//        
-//            st.setString(6, u.getRut_user());
-//
-//            int res = st.executeUpdate();
-//            if (res == 1) {
-//                JOptionPane.showMessageDialog(null, "usuario modificado");
-//            } else {
-//                System.out.println("usuario no modificado");
-//            }
-//
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, "Rut no valido corresponde a otra persona");
-//        } finally {
-//            c.desconectar();
-//        }
-//
-//    }
-//    
-//    public ArrayList consultarTodos() {
-//        ArrayList lista = new ArrayList();
-//        String sql = "SELECT `rut_user`, `contraseña`, `nombre`, `apellidop`, `apellidom`, perfil.descripcion FROM `usuario`,`perfil` WHERE usuario.id_perfil=perfil.`id_perfil`";
-//        c.conectar();
-//        try {
-//            PreparedStatement st = c.getConector().prepareStatement(sql);
-//            ResultSet rs = st.executeQuery();
-//
-//            while (rs.next()) {
-//                usuario b = new usuario();
-//                b.setRut_user(rs.getString(1));
-//                b.setNombre(rs.getString(2));
-//                b.setApellidop(rs.getString(3));
-//                b.setApellidom(rs.getString(4));
-//                b.setContraseña(rs.getString(5));
-//                b.setPerfil(rs.getString(6));
-//                
-//
-//                lista.add(b);
-//
-//            }
-//
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        } finally {
-//            c.desconectar();
-//        }
-//        return lista;
-//    }
-//
-//    
-//     public ArrayList consultarTodasesiones() {
-//        ArrayList lista = new ArrayList();
-//        String sql = "SELECT usuario.rut_user, usuario.nombre, usuario.apellidop, usuario.apellidom, perfil.descripcion, sesion.hora, sesion.fecha FROM `usuario`,`perfil`,sesion WHERE sesion.rut_user=usuario.rut_user and usuario.id_perfil=perfil.`id_perfil` ";
-//        c.conectar();
-//        try {
-//            PreparedStatement st = c.getConector().prepareStatement(sql);
-//            ResultSet rs = st.executeQuery();
-//
-//            while (rs.next()) {
-//                usuario b = new usuario();
-//                sesion s = new sesion();
-//                b.setRut_user(rs.getString(1));
-//                b.setNombre(rs.getString(2));
-//                b.setApellidop(rs.getString(3));
-//                b.setApellidom(rs.getString(4));
-//               
-//                b.setPerfil(rs.getString(5));
-//                b.setHora(rs.getTime(6));
-//                b.setFecha(rs.getString(7));
-//                
-//
-//                lista.add(b);
-//                
-//
-//            }
-//
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage());
-//        } finally {
-//            c.desconectar();
-//        }
-//        return lista;
-//    }
-//     
+
 //      public ArrayList<usuario> seleccionarporrut(String parametro) {
 //
 //        usuario book = null;
@@ -360,17 +332,17 @@ public class habitacionCRUD {
 //        return listatodo;
 //    }
 //    
-//    public void eliminarJugador(usuario j) {
-//        String sql = "delete from usuario where rut_user = ?"; 
-//        c.conectar(); 
-//        try { 
-//            PreparedStatement st = c.getConector().prepareStatement(sql);
-//            st.setString(1, j.getRut_user()); st.executeUpdate(); 
-//            JOptionPane.showMessageDialog(null, "usuario Eliminado "); 
-//        } catch (SQLException ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage()); 
-//        } finally { 
-//            c.desconectar(); 
-//        } 
-//    }
+    public void eliminarJugador(habitacion j) {
+        String sql = "delete from habitacion where numero = ?"; 
+        c.conectar(); 
+        try { 
+            PreparedStatement st = c.getConector().prepareStatement(sql);
+            st.setInt(1, j.getNumero()); st.executeUpdate(); 
+            JOptionPane.showMessageDialog(null, "la habitacion Eliminado "); 
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage()); 
+        } finally { 
+            c.desconectar(); 
+        } 
+    }
 }
